@@ -1,7 +1,8 @@
 ﻿using System;
 using NLog.Web;
 using System.IO;
-using System.Collections; 
+using System.Collections;
+using System.Linq;
 namespace MediaLibrary
 {
     class Program
@@ -13,84 +14,68 @@ namespace MediaLibrary
 
             logger.Info("Program started");
 
-        //    Movie movie = new Movie
-        //     {
-        //         mediaId = 123,
-        //         title = "Greatest Movie Ever, The (2020)",
-        //         director = "Jeff Grissom",
-        //         // timespan (hours, minutes, seconds)
-        //         runningTime = new TimeSpan(2, 21, 23),
-        //         genres = { "Comedy", "Romance" }
-        //     };
-        //     Album album = new Album
-        //     {
-        //         mediaId = 321,
-        //         title = "Greatest Album Ever, The (2020)",
-        //         artist = "Jeff's Awesome Band",
-        //         recordLabel = "Universal Music Group",
-        //         genres = { "Rock" }
-        //     };
-        //       Book book = new Book
-        //     {
-        //         mediaId = 111,
-        //         title = "Super Cool Book",
-        //         author = "Jeff Grissom",
-        //         pageCount = 101,
-        //         publisher = "",
-        //         genres = { "Suspense", "Mystery" }
-        //     };
-        //     Console.WriteLine(book.Display());
-        //     Console.WriteLine(album.Display());
-        //     Console.WriteLine(movie.Display());
-string scrubbedFile = FileScrubber.ScrubMovies("movies.csv");
-            logger.Info(scrubbedFile);
-            logger.Info("Program ended");
-            MediaLibrary.MovieFile mv = new MediaLibrary.MovieFile();
-            string id = "";
-            string title = "";
-            string genre = "";
-            string director = "";
-            string time = "";
+            string scrubbedFile = FileScrubber.ScrubMovies("movies.csv");
+            MovieFile movieFile = new MovieFile("movies.scrubbed.csv");
             string userchoice = "";
-            
-            ArrayList movieGenre = new ArrayList();
-            do{
-                Console.WriteLine("type 1 to add a movie or 2 to read all movies and anything else to end");
+
+            do
+            {
+                Console.WriteLine("Press 1 to add a movie to a file, 2 to read from a file, or 3 to search for a movie and any other key to quit");
                 userchoice = Console.ReadLine();
-                if(userchoice == "1"){
-                    Console.WriteLine("Please type the movies ID");
+
+                if (userchoice == "1")
+                {
+                    string id = "";
+                    string title = "";
+                    string director = "";
+                    string runTime = "";
+                    string genre = "";
+                    ArrayList movieGenre = new ArrayList();
+                    Console.WriteLine("Please enter movie id");
                     id = Console.ReadLine();
-                    Console.WriteLine("Please type the movies Title");
-                    title = Console.ReadLine();
-
-                    do{
+                    Console.WriteLine("Please enter movie title");
+                    id = Console.ReadLine();
+                    do
+                    {
                         Console.WriteLine("Please type the movies genre(s) press -1 to stop");
-                    genre = Console.ReadLine();
+                        genre = Console.ReadLine();
 
-                    if(genre != "-1"){
-                        movieGenre.Add(genre);
-                    }
-                    }while(genre != "-1");
+                        if (genre != "-1")
+                        {
+                            movieGenre.Add(genre);
+                        }
+                    } while (genre != "-1");
                     string totalGenre = string.Join("|", (string[])movieGenre.ToArray(Type.GetType("System.String")));
-                     Console.WriteLine("Please type the movies director (or blank if not known)");
+
+                    Console.WriteLine("Please enter movie runtime (h:m:s)");
+                    runTime = Console.ReadLine();
+                    Console.WriteLine("Please enter movie director");
                     director = Console.ReadLine();
-                     Console.WriteLine("Please type the movies runtime (h:m:s)");
-                    time = Console.ReadLine();
-                 mv.addMovie(id, title, genre, director, time);
-
 
 
                 }
-                if(userchoice == "2"){
-                    mv.readMovie();
+                if (userchoice == "3")
+                {
+                    Console.WriteLine("please enter the movies title");
+
+                    string search = Console.ReadLine();
+                    movieFile.findMovie(search);
+
                 }
+
+
 
             }
-            while(userchoice == "1" || userchoice == "2");
+            while (userchoice == "1" || userchoice == "2" || userchoice == "3");
 
-         
-//  ticketClasser.Cvs cvs =new ticketClasser.Cvs();
-            
+
+
+
+
+
+
+
+            logger.Info("Program ended");
         }
     }
 }
